@@ -16,43 +16,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Consultar Gemini y Actualizar Web
-        run: |
-          python -c '
-          import urllib.request
-          import json
-          import time
-
-          # 1. Consultar a Gemini IA
-          url = "https://googleapis.com\${{ secrets.GEMINI_API_KEY }}"
-          prompt = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Tu titular impactante aki\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
-          
-          data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
-          req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-          
-          with urllib.request.urlopen(req) as response:
-              res_data = json.loads(response.read().decode("utf-8"))
-              raw_text = res_data["candidates"]["content"]["parts"]["text"].strip()
-              if raw_text.startswith("```"):
-                  raw_text = raw_text.split("\n", 1)[1].rsplit("\n", 1)[0].strip()
-                  if raw_text.startswith("json"):
-                      raw_text = raw_text[4:].strip()
-
-          # 2. Leer archivo indice.html e inyectar la noticia
-          with open("índice.html", "r", encoding="utf-8") as f:
-              html = f.read()
-
-          nueva_linea = f"  {raw_text},\n"
-          html_modificado = html.replace("const noticiasDB = [", "const noticiasDB = [\n" + nueva_linea)
-
-          with open("índice.html", "w", encoding="utf-8") as f:
-              f.write(html_modificado)
-          '
+      - name: Ejecutar script de actualización
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python script.py
 
       - name: Guardar cambios en la Web
         run: |
           git config --global user.name "Robot Noticiero IA"
           git config --global user.email "bot@ia.com"
           git add índice.html
-          git commit -m "Noticia automatica del dia añadida con Python" || echo "No hay cambios"
+          git commit -m "Noticia automatica añadida" || echo "No hay cambios"
           git push
