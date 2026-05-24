@@ -53,14 +53,12 @@
             padding: 0 1.5rem;
         }
 
-        /* Contenedor de las Noticias */
         #news-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
         }
 
-        /* Tarjetas de diseño */
         .news-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -124,7 +122,6 @@
             color: var(--bg-color);
         }
 
-        /* Estado de carga y errores */
         .loading, .error-msg {
             grid-column: 1 / -1;
             text-align: center;
@@ -164,6 +161,56 @@
         <p>&copy; 2026 Espanttos Labs. Alimentado por el RSS de Xataka.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rssUrl = "https://feeds.feedburner.com/xataka2";
+            const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+            const container = document.getElementById("news-container");
+
+            fetch(proxyUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Error en la red");
+                    return response.json();
+                })
+                .then(data => {
+                    container.innerHTML = "";
+
+                    if (data.status !== "ok" || !data.items || data.items.length === 0) {
+                        container.innerHTML = `<div class="error-msg">No se han podido cargar las noticias.</div>`;
+                        return;
+                    }
+
+                    data.items.slice(0, 12).forEach(item => {
+                        let cleanDescription = item.description.replace(/<[^>]*>/g, '');
+                        if (cleanDescription.length > 150) {
+                            cleanDescription = cleanDescription.substring(0, 150) + "...";
+                        }
+
+                        const pubDate = new Date(item.pubDate);
+                        const formattedDate = pubDate.toLocaleDateString('es-ES', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+
+                        const card = document.createElement("div");
+                        card.className = "news-card";
+                        card.innerHTML = `
+                            <div class="news-content">
+                                <div class="news-date">${formattedDate}</div>
+                                <h2 class="news-title">${item.title}</h2>
+                                <p class="news-description">${cleanDescription}</p>
+                                <a href="${item.link}" target="_blank" class="news-link">Leer artículo completo</a>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    container.innerHTML = `<div class="error-msg">¡Vaya! No se han podido cargar las noticias por un problema de conexión.</div>`;
+                });
+        });
+    </script>
 </body>
 </html>
