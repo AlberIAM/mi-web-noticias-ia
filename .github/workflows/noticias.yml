@@ -13,9 +13,11 @@ jobs:
 
       - name: Consultar noticias con Gemini IA
         id: gemini
+        env:
+          LLAVE_SECRETA: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Hacemos la consulta limpia directamente al servidor oficial de Google
-          RESPONSE=$(curl -X POST "https://googleapis.com{{ secrets.GEMINI_API_KEY }}" \
+          # Hacemos la consulta usando la variable de entorno para evitar el error de corchetes en la URL
+          RESPONSE=$(curl -X POST "https://googleapis.com" \
             -H "Content-Type: application/json" \
             -d '{
               "contents": [{
