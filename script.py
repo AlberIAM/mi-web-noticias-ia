@@ -6,7 +6,6 @@ import time
 try:
     key = os.environ.get("GEMINI_KEY", "").strip()
     
-    # Dirección oficial completa en una sola linea limpia
     url = f"https://googleapis.com{key}"
     
     prompt_text = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano con este formato: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Titular aqui\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
