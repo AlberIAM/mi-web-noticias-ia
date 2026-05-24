@@ -11,20 +11,33 @@ jobs:
       - name: Clonar repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - name: Consultar noticias con Gemini IA
+        id: gemini
+        run: |
+          # Hacemos la consulta limpia directamente al servidor oficial de Google
+          RESPONSE=$(curl -X POST "https://googleapis.com{{ secrets.GEMINI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "contents": [{
+                "parts": [{
+                  "text": "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": '$(date +%s)', \"titulo\": \"Titular impactante de menos de 60 caracteres\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
+                }]
+              }]
+            }')
+          
+          # Extraemos el texto de la respuesta de Gemini de forma segura
+          TEXTO_NOTICIA=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text' | tr -d '\n\r')
+          echo "NOTICIA_FINAL=$TEXTO_NOTICIA" >> $GITHUB_ENV
 
-      - name: Ejecutar script de actualización
-        env:
-          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python script.py
+      - name: Actualizar el archivo indice.html
+        run: |
+          # Insertamos la noticia directamente dentro de la base de datos de tu pagina
+          sed -i "s|const noticiasDB = \[|const noticiasDB = \[\n  ${{ env.NOTICIA_FINAL }},|" índice.html
 
       - name: Guardar cambios en la Web
         run: |
           git config --global user.name "Robot Noticiero IA"
           git config --global user.email "bot@ia.com"
           git add índice.html
-          git commit -m "Noticia automatica añadida" || echo "No hay cambios"
+          git commit -m "Noticia automatica añadida directamente" || echo "No hay cambios"
           git push
