@@ -6,9 +6,12 @@ import time
 try:
     # 1. Obtener la clave secreta de forma directa
     key = os.environ.get("GEMINI_KEY", "").strip()
-    url = f"https://googleapis.com{key}"
     
-    prompt = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Tu titular impactante aki\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
+    # Construcción de la URL segura sin recortes de GitHub
+    base_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    url = f"{base_url}?key={key}"
+    
+    prompt = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Tu titular impactante\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
     
     data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
