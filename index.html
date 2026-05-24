@@ -3,80 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechRadar IA | El futuro de la tecnología</title>
+    <title>TechRadar IA | Portal Líder en Tecnología</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #ff0055;
-            --accent-gradient: linear-gradient(135deg, #ff0055 0%, #7000ff 100%);
-            --border: rgba(255, 255, 255, 0.08);
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --brand: #1e40af;
+            --brand-light: #eff6ff;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 60px; }
         
-        /* Cabecera Premium estilo High-Tech */
-        header { background: #000000; padding: 20px; text-align: center; border-bottom: 2px solid #ff0055; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        header .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; font-weight: 600; }
+        /* Cabecera Estilo Corporativo Bloomberg/TechCrunch */
+        header { background: #ffffff; padding: 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.02); }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .logo { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase; color: var(--text-main); }
+        .logo span { color: var(--brand); }
+        .tagline { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; font-weight: 600; }
         
-        /* Contenedor Adaptativo (PC y Móvil) */
+        /* Contenedor Principal Adaptativo */
         main { padding: 20px; max-width: 1200px; margin: 0 auto; }
-        
-        h2 { font-size: 1.1rem; margin: 40px 0 20px 0; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; border-left: 4px solid var(--accent); padding-left: 10px; }
+        h2 { font-size: 0.85rem; margin: 30px 0 16px 0; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
 
-        /* Cuadrícula Dinámica: 1 columna en móvil, 3 columnas en PC */
-        .feed { display: grid; grid-template-columns: 1fr; gap: 24px; }
-        @media (min-width: 768px) {
-            .feed { grid-template-columns: repeat(2, 1fr); }
-        }
+        /* Cuadrícula Híbrida: Lista en móvil, diseño asimétrico avanzado en PC */
+        .feed { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        
         @media (min-width: 1024px) {
-            .feed { grid-template-columns: repeat(3, 1fr); }
+            .feed { grid-template-columns: 2fr 1fr; }
+            /* Hace que la primera noticia sea gigante en ordenadores */
+            .noticia-card:first-child { grid-row: span 2; flex-direction: column; }
+            .noticia-card:first-child .noticia-img-container { width: 100%; height: 350px; }
+            .noticia-card:first-child .noticia-titulo { font-size: 1.5rem; margin-top: 10px; }
+            .noticia-card:first-child .noticia-preview { display: block; margin-top: 8px; }
         }
         
-        /* Tarjetas de Diseño de Alto Impacto */
-        .noticia-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid var(--border); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .noticia-card:hover { transform: translateY(-6px); box-shadow: 0 20px 4px -10px rgba(255, 0, 85, 0.15), 0 20px 40px rgba(0,0,0,0.4); border-color: rgba(255, 0, 85, 0.4); }
+        /* Tarjetas de Diseño Limpio y Ejecutivo */
+        .noticia-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; display: flex; flex-direction: row; padding: 16px; gap: 16px; text-decoration: none; color: inherit; border: 1px solid var(--border); cursor: pointer; transition: box-shadow 0.2s, transform 0.2s; box-shadow: var(--shadow); }
+        .noticia-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05); border-color: #cbd5e1; }
         
-        .noticia-img-container { width: 100%; height: 200px; overflow: hidden; background: #0f172a; position: relative; }
-        .noticia-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .noticia-card:hover .noticia-img { transform: scale(1.05); }
+        .noticia-img-container { width: 110px; height: 110px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #f1f5f9; }
+        .noticia-img { width: 100%; height: 100%; object-fit: cover; }
         
-        .noticia-info { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; min-height: 180px; }
-        .noticia-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .noticia-tag { font-size: 0.65rem; font-weight: 800; color: #ffffff; text-transform: uppercase; background: var(--accent-gradient); padding: 4px 12px; border-radius: 6px; letter-spacing: 0.5px; }
+        .noticia-info { display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+        .noticia-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .noticia-tag { font-size: 0.65rem; font-weight: 700; color: var(--brand); text-transform: uppercase; background: var(--brand-light); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; }
         
-        .noticia-titulo { font-size: 1.15rem; font-weight: 800; line-height: 1.4; color: #ffffff; margin-bottom: 10px; letter-spacing: -0.3px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .noticia-preview { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .noticia-titulo { font-size: 1.05rem; font-weight: 700; line-height: 1.4; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; letter-spacing: -0.1px; }
+        .noticia-preview { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: none; }
         
-        .recomendado-tag { background: rgba(112, 0, 255, 0.2); color: #a78bfa; border: 1px solid rgba(112, 0, 255, 0.4); padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; display: none; text-transform: uppercase; }
+        .recomendado-tag { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; display: none; text-transform: uppercase; }
         .is-recommended .recomendado-tag { display: inline-block; }
 
-        /* Modal de Lectura Premium */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #0f172a; width: 100%; max-width: 600px; padding: 35px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .close-btn { background: var(--accent-gradient); border: none; padding: 14px; border-radius: 12px; font-weight: 700; margin-top: 30px; width: 100%; cursor: pointer; color: #ffffff; font-size: 1rem; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3); }
-        .close-btn:hover { filter: brightness(1.1); }
+        /* Modal Ejecutivo */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #ffffff; width: 100%; max-width: 550px; padding: 32px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); }
+        .close-btn { background: var(--text-main); border: none; padding: 12px; border-radius: 8px; font-weight: 600; margin-top: 24px; width: 100%; cursor: pointer; color: #ffffff; font-size: 0.95rem; }
+        .close-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">TechRadar // IA</div>
-        <p>El pulso de la inteligencia artificial y el futuro digital</p>
+        <div class="header-container">
+            <div class="logo">TechRadar<span>//IA</span></div>
+            <div class="tagline">Inteligencia artificial y el ecosistema tecnológico global</div>
+        </div>
     </header>
 
     <main>
         <div id="seccion-personalizada">
-            <h2>✨ DESTACADO PARA TI</h2>
+            <h2>✨ Seleccionado para ti</h2>
             <div id="feed-personalizado" class="feed"></div>
         </div>
 
-        <h2>📰 ÚLTIMAS COBERTURAS</h2>
+        <h2>📰 Últimas Coberturas</h2>
         <div id="feed-general" class="feed"></div>
     </main>
 
@@ -84,14 +89,14 @@
     <div id="noticia-modal" class="modal" onclick="cerrarNoticia()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span id="modal-tag" class="noticia-tag"></span>
-            <h3 id="modal-titulo" style="margin: 20px 0 16px 0; font-size: 1.5rem; font-weight: 900; line-height: 1.3; letter-spacing: -0.5px;"></h3>
-            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem; margin-bottom: 10px;">Análisis en tiempo real desarrollado de forma automatizada por el modelo de IA. Este ecosistema simula la carga del artículo completo, analizando de manera interna tus preferencias de navegación en este navegador para priorizar de forma predictiva los bloques temáticos de tu portada en tus próximas visitas.</p>
-            <button class="close-btn" onclick="cerrarNoticia()">VOLVER AL FEED GENERAL</button>
+            <h3 id="modal-titulo" style="margin: 16px 0 12px 0; font-size: 1.4rem; font-weight: 700; line-height: 1.35;"></h3>
+            <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 10px;">Análisis en tiempo real desarrollado de forma automatizada por el modelo de IA. Este ecosistema simula la carga del artículo completo, analizando de manera interna tus preferencias de navegación en este navegador para priorizar de forma predictiva los bloques temáticos de tu portada en tus próximas visitas.</p>
+            <button class="close-btn" onclick="cerrarNoticia()">Cerrar Lectura</button>
         </div>
     </div>
 
     <script>
-        // Base de datos fija con imágenes estables de tecnología en Unsplash
+        // Repositorio seguro de noticias iniciales con imágenes estables de tecnología en Unsplash
         const noticiasDB = [
           { "id": 101, "titulo": "Gemini 1.5 amplía su ventana de contexto global de forma masiva", "categoria": "ia", "img": "https://unsplash.com" },
           { "id": 102, "titulo": "Claude integra un entorno de ejecución de código nativo e interactivo", "categoria": "ia", "img": "https://unsplash.com" },
@@ -122,8 +127,9 @@
             const feedPersonalizado = document.getElementById('feed-personalizado');
             const seccionPersonalizada = document.getElementById('seccion-personalizada');
             
-            const gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {};
+            if (!feedGeneral) return;
             
+            const gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {};
             let categoriaFavorita = "";
             let maxClics = 0;
             for (const cat in gustos) {
@@ -134,9 +140,11 @@
             }
 
             feedGeneral.innerHTML = "";
-            feedPersonalizado.innerHTML = "";
+            if (feedPersonalizado) feedPersonalizado.innerHTML = "";
 
             noticiasDB.forEach(noticia => {
+                if (!noticia) return;
+                
                 const card = document.createElement('div');
                 card.className = 'noticia-card';
                 card.onclick = () => { registrarClic(noticia.categoria, noticia.titulo, noticia.id); };
@@ -147,11 +155,11 @@
 
                 card.innerHTML = `
                     <div class="noticia-img-container">
-                        <img class="noticia-img" src="\${noticia.img}" onerror="fallbackImg(this)" alt="Tech">
+                        <img class="noticia-img" src="\${noticia.img}" onerror="fallbackImg(this)" alt="Noticia">
                     </div>
                     <div class="noticia-info">
                         <div>
                             <div class="noticia-meta">
                                 <span class="noticia-tag">\${noticia.categoria}</span>
-                                <span class="recomendado-tag">✨ TOP RECOMENDADO</span>
+                                <span class="recomendado-tag">✨ Recomendado</span>
                             </div>
