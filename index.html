@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espanttos IA - Noticias de Tecnología</title>
+    <title>Universo IA - Actualidad y Conexión Tecnológica</title>
     <style>
         :root {
             --bg-color: #0f111a;
@@ -25,7 +25,7 @@
 
         header {
             background: linear-gradient(135deg, #16192b, #0f111a);
-            padding: 2rem 1rem;
+            padding: 2.5rem 1rem;
             text-align: center;
             border-bottom: 2px solid var(--accent);
             box-shadow: 0 4px 20px rgba(0, 255, 170, 0.1);
@@ -130,10 +130,6 @@
             color: var(--text-muted);
         }
 
-        .error-msg {
-            color: #ff5555;
-        }
-
         footer {
             text-align: center;
             padding: 2rem;
@@ -148,67 +144,51 @@
 
     <header>
         <h1>⚡ Universo <span>IA</span></h1>
-        <p>Actualidad tecnológica de Xataka maquetada en tiempo real</p>
+        <p>Noticias globales de tecnología e inteligencia artificial en tiempo real</p>
     </header>
 
     <main>
         <div id="news-container">
-            <div class="loading">Invocando a las IA... Cargando noticias...</div>
+            <div class="loading">Sintonizando canales artificiales...</div>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 Espanttos Labs. Alimentado por el RSS de Xataka.</p>
+        <p>&copy; 2026 Red de Actualidad Tecnológica. Contenido automatizado.</p>
     </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const rssUrl = "https://feeds.feedburner.com/xataka2";
-            const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             const container = document.getElementById("news-container");
-
-            fetch(proxyUrl)
+            
+            fetch('noticias.json')
                 .then(response => {
-                    if (!response.ok) throw new Error("Error en la red");
+                    if (!response.ok) throw new Error();
                     return response.json();
                 })
-                .then(data => {
+                .then(noticias => {
                     container.innerHTML = "";
-
-                    if (data.status !== "ok" || !data.items || data.items.length === 0) {
-                        container.innerHTML = `<div class="error-msg">No se han podido cargar las noticias.</div>`;
+                    if(noticias.length === 0) {
+                        container.innerHTML = '<div class="loading">Esperando actualización del sistema de noticias...</div>';
                         return;
                     }
-
-                    data.items.slice(0, 12).forEach(item => {
-                        let cleanDescription = item.description.replace(/<[^>]*>/g, '');
-                        if (cleanDescription.length > 150) {
-                            cleanDescription = cleanDescription.substring(0, 150) + "...";
-                        }
-
-                        const pubDate = new Date(item.pubDate);
-                        const formattedDate = pubDate.toLocaleDateString('es-ES', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                        });
-
+                    
+                    noticias.reverse().forEach(item => {
                         const card = document.createElement("div");
                         card.className = "news-card";
                         card.innerHTML = `
                             <div class="news-content">
-                                <div class="news-date">${formattedDate}</div>
-                                <h2 class="news-title">${item.title}</h2>
-                                <p class="news-description">${cleanDescription}</p>
-                                <a href="${item.link}" target="_blank" class="news-link">Leer artículo completo</a>
+                                <div class="news-date">${item.fecha}</div>
+                                <h2 class="news-title">${item.titulo}</h2>
+                                <p class="news-description">${item.descripcion}</p>
+                                <a href="${item.enlace}" target="_blank" class="news-link">Leer fuente original</a>
                             </div>
                         `;
                         container.appendChild(card);
                     });
                 })
-                .catch(error => {
-                    console.error("Error:", error);
-                    container.innerHTML = `<div class="error-msg">¡Vaya! No se han podido cargar las noticias por un problema de conexión.</div>`;
+                .catch(() => {
+                    container.innerHTML = '<div class="loading">Inicializando base de datos... Conectando con el robot.</div>';
                 });
         });
     </script>
