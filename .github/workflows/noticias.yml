@@ -24,12 +24,12 @@ jobs:
               }]
             }')
           
-          TEXTO_NOTICIA=$(echo "$RESPONSE" | jq -r '.candidates.content.parts.text')
-          echo "noticia=$TEXTO_NOTICIA" >> $GITHUB_ENV
+          TEXTO_NOTICIA=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
+          echo "NOTICIA_DATA=$TEXTO_NOTICIA" >> $GITHUB_ENV
 
       - name: Actualizar el archivo indice.html
         run: |
-          sed -i "s|const noticiasDB = \[|const noticiasDB = \[\n  $noticia,|" índice.html
+          sed -i "s|const noticiasDB = \[|const noticiasDB = \[\n  ${{ env.NOTICIA_DATA }},|" índice.html
 
       - name: Guardar cambios en la Web
         run: |
