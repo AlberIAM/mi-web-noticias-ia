@@ -5,9 +5,11 @@ import time
 
 try:
     key = os.environ.get("GEMINI_KEY", "").strip()
-    url = f"https://googleapis.com{key}"
     
-    # Prompt simplificado al maximo para evitar errores de servidor
+    dominio = "https://googleapis.com"
+    ruta = "/v1beta/models/gemini-1.5-flash:generateContent"
+    url = dominio + ruta + "?key=" + key
+    
     prompt_text = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano con este formato: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Titular aqui\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
     
     body = {"contents": [{"parts": [{"text": prompt_text}]}]}
@@ -19,14 +21,12 @@ try:
         res_data = json.loads(response.read().decode("utf-8"))
         raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
         
-        # Limpieza estricta de formato markdown
         if raw_text.startswith("```"):
             lines = raw_text.split("\n")
             if lines[0].startswith("```json") or lines[0].startswith("```"):
                 lines = lines[1:-1]
             raw_text = "\n".join(lines).strip()
 
-    # Inyeccion directa en tu pagina web
     with open("índice.html", "r", encoding="utf-8") as f:
         html = f.read()
 
