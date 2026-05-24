@@ -4,30 +4,29 @@ import os
 import time
 
 try:
-    # 1. Obtener la clave secreta de forma directa
     key = os.environ.get("GEMINI_KEY", "").strip()
+    url = f"https://googleapis.com{key}"
     
-    # Construcción de la URL segura sin recortes de GitHub
-    base_url = "https://googleapis.com"
-    url = f"{base_url}?key={key}"
-
+    # Prompt simplificado al maximo para evitar errores de servidor
+    prompt_text = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano con este formato: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Titular aqui\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
     
-    prompt = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Tu titular impactante\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
+    body = {"contents": [{"parts": [{"text": prompt_text}]}]}
+    data = json.dumps(body).encode("utf-8")
     
-    data = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
     
     with urllib.request.urlopen(req) as response:
         res_data = json.loads(response.read().decode("utf-8"))
         raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
         
-        # Limpiar bloques markdown si la IA los añade por costumbre
+        # Limpieza estricta de formato markdown
         if raw_text.startswith("```"):
-            raw_text = raw_text.split("\n", 1)[1].rsplit("\n", 1)[0].strip()
-            if raw_text.startswith("json"):
-                raw_text = raw_text[4:].strip()
+            lines = raw_text.split("\n")
+            if lines[0].startswith("```json") or lines[0].startswith("```"):
+                lines = lines[1:-1]
+            raw_text = "\n".join(lines).strip()
 
-    # 2. Leer archivo índice.html e inyectar la noticia
+    # Inyeccion directa en tu pagina web
     with open("índice.html", "r", encoding="utf-8") as f:
         html = f.read()
 
@@ -36,8 +35,8 @@ try:
 
     with open("índice.html", "w", encoding="utf-8") as f:
         f.write(html_modificado)
-        print("Web actualizada con éxito.")
+    print("Completado con exito.")
 
 except Exception as e:
-    print(f"Error en el proceso: {e}")
+    print(f"Error detallado: {e}")
     exit(1)
