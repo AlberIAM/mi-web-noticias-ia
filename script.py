@@ -4,8 +4,8 @@ import os
 import time
 
 try:
-    # 1. Consultar a Gemini IA de forma directa y segura
-    key = os.environ.get("GEMINI_KEY", "")
+    # 1. Obtener la clave secreta de forma directa
+    key = os.environ.get("GEMINI_KEY", "").strip()
     url = f"https://googleapis.com{key}"
     
     prompt = "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser exactamente: {\"id\": " + str(int(time.time())) + ", \"titulo\": \"Tu titular impactante aki\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
@@ -17,7 +17,7 @@ try:
         res_data = json.loads(response.read().decode("utf-8"))
         raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
         
-        # Limpiar bloques markdown si la IA los añade
+        # Limpiar bloques markdown si la IA los añade por costumbre
         if raw_text.startswith("```"):
             raw_text = raw_text.split("\n", 1)[1].rsplit("\n", 1)[0].strip()
             if raw_text.startswith("json"):
