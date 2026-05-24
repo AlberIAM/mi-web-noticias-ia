@@ -1,0 +1,40 @@
+name: Actualizador Automatico de Noticias IA
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  actualizar-noticias:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Consultar noticias con Gemini IA
+        id: gemini
+        run: |
+          RESPONSE=$(curl -X POST "https://googleapis.com{{ secrets.GEMINI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "contents": [{
+                "parts": [{
+                  "text": "Busca la noticia mas importante de hoy sobre Inteligencia Artificial o tecnologia. Devuelve exclusivamente un objeto JSON plano, sin formato markdown, sin texto explicativo. El formato debe ser: {\"id\": '$(date +%s)', \"titulo\": \"Titular impactante de menos de 60 caracteres\", \"categoria\": \"ia\", \"img\": \"https://unsplash.com\"}"
+                }]
+              }]
+            }')
+          
+          TEXTO_NOTICIA=$(echo "$RESPONSE" | jq -r '.candidates.content.parts.text')
+          echo "noticia=$TEXTO_NOTICIA" >> $GITHUB_ENV
+
+      - name: Actualizar el archivo indice.html
+        run: |
+          sed -i "s|const noticiasDB = \[|const noticiasDB = \[\n  $noticia,|" índice.html
+
+      - name: Guardar cambios en la Web
+        run: |
+          git config --global user.name "Robot Noticiero IA"
+          git config --global user.email "bot@ia.com"
+          git add índice.html
+          git commit -m "Noticia automatica del dia añadida"
+          git push
