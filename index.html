@@ -6,8 +6,8 @@
     <title>TechRadar IA | El pulso del futuro digital</title>
     <style>
         :root {
-            --bg-page: #060814;
-            --bg-card: #0f1123;
+            --bg-page: #060913;
+            --bg-card: #0f1322;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --accent: #ff0055;
@@ -18,39 +18,44 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-page); color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 60px; }
         
-        /* Cabecera Estilo The Verge / High-Tech */
-        header { background: #000000; padding: 24px 20px; text-align: center; border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
-        .tagline { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
+        /* CABECERA Y LOGOTIPO PREMIUM */
+        header { background: #000000; padding: 20px; text-align: center; border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .logo { font-size: 2rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+        .tagline { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; font-weight: 600; }
         
-        /* Contenedor Adaptativo Híbrido */
-        main { padding: 20px; max-width: 1200px; margin: 0 auto; }
-        h2 { font-size: 1rem; margin: 40px 0 20px 0; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; border-left: 4px solid var(--accent); padding-left: 12px; }
+        /* SISTEMA DE PESTAÑAS DE NAVEGACIÓN */
+        .tabs-container { background: #0b0f19; border-bottom: 1px solid var(--border); position: sticky; top: 82px; z-index: 90; display: flex; justify-content: center; overflow-x: auto; white-space: nowrap; }
+        .tab-btn { background: none; border: none; color: var(--text-muted); padding: 14px 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .tab-btn:hover { color: #ffffff; }
+        .tab-btn.active { color: #ffffff; border-bottom-color: var(--accent); background: rgba(255, 0, 85, 0.05); }
 
-        /* Cuadrícula Inteligente: 1 columna en móvil, 2 en tablets, 3 en pantallas PC grandes */
+        /* CONTENEDOR PRINCIPAL ADAPTATIVO */
+        main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
+        h2 { font-size: 1.1rem; margin: 20px 0; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; border-left: 4px solid var(--accent); padding-left: 12px; }
+
+        /* CUADRÍCULA INTELIGENTE (1 Columna en móvil, 3 Columnas en PC) */
         .feed { display: grid; grid-template-columns: 1fr; gap: 24px; }
         @media (min-width: 768px) { .feed { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .feed { grid-template-columns: repeat(3, 1fr); } }
         
-        /* Tarjetas de Diseño Premium y Futurista */
+        /* TARJETAS DE NOTICIAS DE ALTO IMPACTO VERCEL/THE VERGE */
         .noticia-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid var(--border); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .noticia-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(255, 0, 85, 0.15); border-color: rgba(255, 0, 85, 0.4); }
+        .noticia-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(255, 0, 85, 0.2); border-color: rgba(255, 0, 85, 0.4); }
         
         .noticia-img-container { width: 100%; height: 210px; overflow: hidden; background: #0b0f19; }
-        .noticia-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .noticia-card:hover .noticia-img { transform: scale(1.04); }
+        .noticia-img { width: 100%; height: 100%; object-fit: cover; }
         
         .noticia-info { padding: 20px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; min-height: 160px; }
         .noticia-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .noticia-tag { font-size: 0.65rem; font-weight: 800; color: #ffffff; text-transform: uppercase; background: var(--accent-gradient); padding: 4px 12px; border-radius: 6px; letter-spacing: 0.5px; }
         
-        .noticia-titulo { font-size: 1.15rem; font-weight: 800; line-height: 1.4; color: #ffffff; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; letter-spacing: -0.2px; }
+        .noticia-titulo { font-size: 1.15rem; font-weight: 800; line-height: 1.4; color: #ffffff; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .noticia-preview { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         
-        .recomendado-tag { background: rgba(112, 0, 255, 0.2); color: #a78bfa; border: 1px solid rgba(112, 0, 255, 0.4); padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; display: none; text-transform: uppercase; }
+        .recomendado-tag { background: rgba(112, 0, 255, 0.3); color: #c084fc; border: 1px solid rgba(112, 0, 255, 0.5); padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; display: none; text-transform: uppercase; }
         .is-recommended .recomendado-tag { display: inline-block; }
 
-        /* Modal Desplegable Táctil Inferior */
+        /* MODAL DE LECTURA PREMIUM */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #0b0f19; width: 100%; max-width: 580px; padding: 32px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         .close-btn { background: var(--accent-gradient); border: none; padding: 14px; border-radius: 12px; font-weight: 700; margin-top: 26px; width: 100%; cursor: pointer; color: #ffffff; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3); }
@@ -58,44 +63,55 @@
 </head>
 <body>
 
+    <!-- LOGOTIPO Y ENCABEZADO -->
     <header>
         <div class="logo">TechRadar // IA</div>
-        <div class="tagline">El pulso de la inteligencia artificial y el ecosistema digital mundial</div>
+        <div class="tagline">El pulso de la inteligencia artificial y el ecosistema tecnológico global</div>
     </header>
 
+    <!-- PESTAÑAS DE CATEGORÍAS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="filtrarCategoria('todas', this)">Todo</button>
+        <button class="tab-btn" onclick="filtrarCategoria('ia', this)">Última hora IA</button>
+        <button class="tab-btn" onclick="filtrarCategoria('avances', this)">Avances IA</button>
+        <button class="tab-btn" onclick="filtrarCategoria('tecnologia', this)">Tecnología</button>
+    </div>
+
     <main>
-        <div id="seccion-personalizada">
+        <div id="seccion-personalizada" style="display: none;">
             <h2>✨ DESTACADO PARA TI</h2>
             <div id="feed-personalizado" class="feed"></div>
         </div>
 
-        <h2>📰 ÚLTIMAS COBERTURAS</h2>
+        <h2>📰 ARTÍCULOS EN TIEMPO REAL</h2>
         <div id="feed-general" class="feed"></div>
     </main>
 
-    <!-- Modal de Lectura Móvil/PC -->
+    <!-- MODAL DE INTERACCIÓN -->
     <div id="noticia-modal" class="modal" onclick="cerrarNoticia()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span id="modal-tag" class="noticia-tag"></span>
             <h3 id="modal-titulo" style="margin: 20px 0 14px 0; font-size: 1.4rem; font-weight: 800; line-height: 1.3;"></h3>
             <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 10px;">Análisis en tiempo real desarrollado de forma automatizada por el modelo de IA. Este ecosistema simula la carga del artículo completo, analizando de manera interna tus preferencias de navegación en este navegador para priorizar de forma predictiva los bloques temáticos de tu portada en tus próximas visitas.</p>
-            <button class="close-btn" onclick="cerrarNoticia()">VOLVER AL FEED GENERAL</button>
+            <button class="close-btn" onclick="cerrarNoticia()">VOLVER AL PORTAL</button>
         </div>
     </div>
 
     <script>
-        // Repositorio seguro de noticias. El robot añadirá las novedades justo debajo de este corchete:
+        // BASE DE DATOS TOTALMENTE LIMPIA Y CORREGIDA SIN CARACTERES EXTRAÑOS
         const noticiasDB = [
           { "id": 1, "titulo": "Gemini 1.5 amplía su ventana de contexto global de forma masiva", "categoria": "ia", "img": "https://unsplash.com" },
-          { "id": 2, "titulo": "Claude integra un entorno de ejecución de código nativo e interactivo", "categoria": "ia", "img": "https://unsplash.com" },
-          { "id": 3, "titulo": "Procesadores cuánticos y nuevas arquitecturas aceleran la IA local", "categoria": "tecnologia", "img": "https://unsplash.com" }
+          { "id": 2, "titulo": "Claude integra un entorno de ejecución de código nativo e interactivo", "categoria": "avances", "img": "https://unsplash.com" },
+          { "id": 3, "titulo": "Procesadores cuánticos baten récords de velocidad en IA local", "categoria": "tecnologia", "img": "https://unsplash.com" }
         ];
+
+        let categoriaActual = "todas";
 
         function fallbackImg(el) {
             el.src = "https://unsplash.com";
         }
 
-        function registrarClic(categoria, titulo, id) {
+        function registrarClic(categoria, titulo) {
             let gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {};
             gustos[categoria] = (gustos[categoria] || 0) + 1;
             localStorage.setItem('gustos_usuario', JSON.stringify(gustos));
@@ -107,50 +123,30 @@
 
         function cerrarNoticia() {
             document.getElementById('noticia-modal').style.display = 'none';
-            cargarWeb();
+            renderizarWeb();
         }
 
-        function cargarWeb() {
+        function filtrarCategoria(cat, btn) {
+            categoriaActual = cat;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderizarWeb();
+        }
+
+        function renderizarWeb() {
             const feedGeneral = document.getElementById('feed-general');
             const feedPersonalizado = document.getElementById('feed-personalizado');
             const seccionPersonalizada = document.getElementById('seccion-personalizada');
             
-            if (!feedGeneral) return;
+            feedGeneral.innerHTML = "";
+            feedPersonalizado.innerHTML = "";
             
             const gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {};
-            let categoriaFavorita = "";
+            let catFavorita = "";
             let maxClics = 0;
-            for (const cat in gustos) {
-                if (gustos[cat] > maxClics) {
-                    maxClics = gustos[cat];
-                    categoriaFavorita = cat;
-                }
+            for (const c in gustos) {
+                if (gustos[c] > maxClics) { maxClics = gustos[c]; catFavorita = c; }
             }
 
-            feedGeneral.innerHTML = "";
-            if (feedPersonalizado) feedPersonalizado.innerHTML = "";
-
             noticiasDB.forEach(noticia => {
-                if (!noticia) return;
-                
-                const card = document.createElement('div');
-                card.className = 'noticia-card';
-                card.onclick = function() { registrarClic(noticia.categoria, noticia.titulo, noticia.id); };
-                
-                if (noticia.categoria === categoriaFavorita) {
-                    card.classList.add('is-recommended');
-                }
-
-                card.innerHTML = `
-                    <div class="noticia-img-container">
-                        <img class="noticia-img" src="\${noticia.img}" onerror="fallbackImg(this)" alt="Noticia">
-                    </div>
-                    <div class="noticia-info">
-                        <div>
-                            <div class="noticia-meta">
-                                <span class="noticia-tag">\${noticia.categoria}</span>
-                                <span class="recomendado-tag">✨ Destacado</span>
-                            </div>
-                            <div class="noticia-titulo">\${noticia.titulo}</div>
-                        </div>
-                        <div class="noticia-preview">Explora el impacto completo de este desarrollo tecnológico acontecido hoy en el mercado global.</div>
+                // Filtrado por pestañas
