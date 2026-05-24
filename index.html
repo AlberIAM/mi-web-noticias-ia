@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiNews IA</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --accent: #0070f3;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 20px; }
+        
+        /* Cabecera Móvil */
+        header { background: var(--card-bg); padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; border-bottom: 1px solid #e0e0e0; sticky; top: 0; z-index: 100; }
+        
+        /* Contenedor principal */
+        main { padding: 15px; max-width: 500px; margin: 0 auto; }
+        h2 { font-size: 1.1rem; margin: 20px 0 10px 0; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Lista de Noticias estilo Tarjeta Móvil */
+        .feed { display: flex; flex-direction: column; gap: 15px; }
+        .noticia-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; display: flex; flex-direction: row; padding: 12px; gap: 12px; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eaeaea; cursor: pointer; min-height: 90px; }
+        .noticia-img { width: 80px; height: 80px; background: #ddd; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+        .noticia-info { display: flex; flex-direction: column; justify-content: space-between; }
+        .noticia-tag { font-size: 0.7rem; font-weight: bold; color: var(--accent); text-transform: uppercase; }
+        .noticia-titulo { font-size: 0.95rem; font-weight: 600; line-height: 1.3; margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Alerta de algoritmo */
+        .recomendado-tag { background: #e3f2fd; color: #0d47a1; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; margin-left: 5px; display: none; }
+        .is-recommended .recomendado-tag { display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <header>⚡ IA News Feed</header>
+
+    <main>
+        <h2>Para Ti (Personalizado)</h2>
+        <div id="feed-personalizado" class="feed"></div>
+
+        <h2>Últimas Noticias</h2>
+        <div id="feed-general" class="feed"></div>
+    </main>
+
+    <script>
+        // Simulación de base de datos de noticias (Esto es lo que Gemini actualizará automáticamente)
+        const noticiasDB = [
+            { id: 1, titulo: "Los 5 mejores prompts de Claude para programadores", categoria: "ia", img: "https://picsum.photos" },
+            { id: 2, titulo: "Bitcoin rompe máximos históricos esta mañana", categoria: "finanzas", img: "https://picsum.photos" },
+            { id: 3, titulo: "Nuevo parche de GTA 6 filtra detalles del mapa", categoria: "gaming", img: "https://picsum.photos" },
+            { id: 4, titulo: "Cómo usar Gemini en tu estrategia de marketing", categoria: "ia", img: "https://picsum.photos" },
+            { id: 5, titulo: "Guía para declarar tus criptomonedas sin errores", categoria: "finanzas", img: "https://picsum.photos" }
+        ];
+
+        // 1. Registrar el clic para entrenar al algoritmo local
+        function registrarClic(categoria) {
+            let gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {}; [1, 2]
+            gustos[categoria] = (gustos[categoria] || 0) + 1; // Suma un punto a esa temática
+            localStorage.setItem('gustos_usuario', JSON.stringify(gustos)); [1, 2]
+        }
+
+        // 2. Renderizar las noticias en la pantalla del móvil
+        function cargarWeb() {
+            const feedGeneral = document.getElementById('feed-general');
+            const feedPersonalizado = document.getElementById('feed-personalizado');
+            
+            // Obtener los gustos del usuario del almacenamiento del móvil [1, 2]
+            const gustos = JSON.parse(localStorage.getItem('gustos_usuario')) || {}; [1, 2]
+            
+            // Encontrar la categoría favorita (la que tiene más clics)
+            let categoriaFavorita = "";
+            let maxClics = 0;
+            for (const cat in gustos) {
+                if (gustos[cat] > maxClics) {
+                    maxClics = gustos[cat];
+                    categoriaFavorita = cat;
+                }
+            }
+
+            feedGeneral.innerHTML = "";
+            feedPersonalizado.innerHTML = "";
+
+            // Separar y ordenar noticias
+            noticiasDB.forEach(noticia => {
+                const card = document.createElement('a');
+                card.className = 'noticia-card';
+                card.onclick = () => { registrarClic(noticia.categoria); };
+                
+                // Si coincide con su gusto favorito, le añade una etiqueta especial visual
+                if (noticia.categoria === categoriaFavorita) {
+                    card.classList.add('is-recommended');
+                }
+
+                card.innerHTML = `
+                    <img class="noticia-img" src="${noticia.img}" alt="Noticia">
+                    <div class="noticia-info">
+                        <div>
+                            <span class="noticia-tag">${noticia.categoria}</span>
+                            <span class="recomendado-tag">✨ Top para ti</span>
+                        </div>
+                        <div class="noticia-titulo">${noticia.titulo}</div>
+                    </div>
+                `;
+
+                // Clonamos para poner las favoritas arriba en su sección y todas abajo
+                if (noticia.categoria === categoriaFavorita && maxClics > 1) {
+                    feedPersonalizado.appendChild(card.cloneNode(true));
+                }
+                feedGeneral.appendChild(card);
+            });
+
+            // Si no hay historial, ocultar sección "Para ti" momentáneamente
+            if (feedPersonalizado.children.length === 0) {
+                feedPersonalizado.previousElementSibling.style.display = 'none';
+            } else {
+                feedPersonalizado.previousElementSibling.style.display = 'block';
+            }
+        }
+
+        // Ejecutar al cargar la página
+        window.onload = cargarWeb;
+    </script>
+</body>
+</html>
