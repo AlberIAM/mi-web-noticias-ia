@@ -1,50 +1,159 @@
-<script>
-  const URL_MAKE = 'https://hook.us1.make.com/tu_codigo_secreto_aqui';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universo IA - Espanttos Labs</title>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #00ffaa;
+            padding-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+        .header h1 span {
+            color: #00ffaa;
+        }
+        .header p {
+            color: #8a99ad;
+            margin: 0;
+        }
+        #noticias-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .noticia-card {
+            background: #141b2d;
+            border: 1px solid #222f47;
+            border-radius: 8px;
+            padding: 25px;
+            transition: transform 0.2s;
+        }
+        .noticia-card:hover {
+            transform: translateY(-2px);
+            border-color: #00ffff;
+        }
+        .noticia-card h2 {
+            color: #00ffaa;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+        .noticia-card p {
+            color: #e2e8f0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .noticia-card a {
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .noticia-card a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 60px;
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-  async function cargarNoticias() {
-    const contenedor = document.getElementById('noticias-container');
-    if (!contenedor) return;
+    <div class="header">
+        <h1>Universo <span>IA</span></h1>
+        <p>Actualidad tecnológica de Xataka maquetada en tiempo real</p>
+    </div>
 
-    try {
-      const response = await fetch(URL_MAKE);
-      if (!response.ok) throw new Error('Respuesta de red incorrecta');
-      
-      const data = await response.json();
-      console.log("Datos del robot:", data);
+    <div id="noticias-container">
+        <p style="text-align: center; color: #8a99ad;">Conectando con el almacén de datos de Make...</p>
+    </div>
 
-      // Limpiamos el texto de carga
-      contenedor.innerHTML = '';
+    <footer>
+        <p>© 2026 Espanttos Labs. Alimentado por el RSS de Xataka.</p>
+    </footer>
 
-      // Si Make nos envía el paquete directo o dentro de un array
-      let noticias = Array.isArray(data) ? data : (data.value || []);
-      if (noticias.length === 0 && data[0] && data[0].value) {
-        noticias = data[0].value;
-      }
+    <script>
+        // ⚠️ CAMBIA ESTE ENLACE POR EL TUYO DE MAKE (Módulo Custom Webhook rosa)
+        const URL_MAKE = 'https://hook.us1.make.com/tu_codigo_secreto_aqui';
 
-      if (noticias.length === 0) {
-        contenedor.innerHTML = '<p style="text-center; color: #fff;">No hay noticias guardadas hoy.</p>';
-        return;
-      }
+        async function cargarNoticias() {
+            const contenedor = document.getElementById('noticias-container');
+            if (!contenedor) return;
 
-      // Maquetación ultra-limpia
-      noticias.forEach(item => {
-        const info = item.data || item;
-        const tarjeta = document.createElement('div');
-        tarjeta.className = 'noticia-card';
-        tarjeta.innerHTML = `
-          <h2 style="color: #00ffaa; margin-top: 20px;">${info.titulo || 'Noticia'}</h2>
-          <p style="color: #ffffff; margin-bottom: 10px;">${info.descripcion || ''}</p>
-          <a href="${info.enlace || '#'}" target="_blank" style="color: #00ffff; font-weight: bold;">Leer más →</a>
-          <hr style="opacity: 0.2; margin-top: 15px;">
-        `;
-        contenedor.appendChild(tarjeta);
-      });
+            try {
+                const response = await fetch(URL_MAKE);
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                
+                const data = await response.json();
+                console.log("Datos del robot:", data);
 
-    } catch (error) {
-      console.error('Error al conectar:', error);
-      contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error de conexión con el almacén de datos.</p>';
-    }
-  }
+                contenedor.innerHTML = ''; // Limpiamos el mensaje de carga
 
-  document.addEventListener('DOMContentLoaded', cargarNoticias);
-</script>
+                // Make envía un array plano envuelto en corchetes por el paso que hicimos
+                let noticias = [];
+                if (Array.isArray(data)) {
+                    noticias = data;
+                } else if (data.value && Array.isArray(data.value)) {
+                    noticias = data.value;
+                } else if (data[0] && data[0].value) {
+                    noticias = data[0].value;
+                }
+
+                if (noticias.length === 0) {
+                    contenedor.innerHTML = '<p style="text-align: center; color: #8a99ad;">No hay noticias guardadas en el almacén en este momento.</p>';
+                    return;
+                }
+
+                // Pintamos las noticias formateadas
+                noticias.forEach(item => {
+                    const info = item.data || item;
+                    
+                    // Verificamos que existan los campos del Data Store
+                    const titulo = info.titulo || info.title || 'Noticia de Última Hora';
+                    const descripcion = info.descripcion || info.description || 'Haz clic abajo para leer los detalles completos.';
+                    const enlace = info.enlace || info.url || '#';
+
+                    const card = document.createElement('div');
+                    card.className = 'noticia-card';
+                    card.innerHTML = `
+                        <h2>${titulo}</h2>
+                        <p>${descripcion}</p>
+                        <a href="${enlace}" target="_blank">Leer más →</a>
+                    `;
+                    contenedor.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Error al conectar:', error);
+                contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">¡Vaya! No se han podido cargar las noticias por un problema de conexión con el almacén.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarNoticias);
+    </script>
+
+</body>
+</html>
