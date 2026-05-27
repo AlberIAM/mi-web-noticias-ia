@@ -1,44 +1,50 @@
 <script>
-  // Cambia ESTE enlace por el tuyo de Make (el de la burbuja rosa custom webhook)
   const URL_MAKE = 'https://hook.us1.make.com/tu_codigo_secreto_aqui';
 
   async function cargarNoticias() {
+    const contenedor = document.getElementById('noticias-container');
+    if (!contenedor) return;
+
     try {
       const response = await fetch(URL_MAKE);
-      const data = await response.json();
+      if (!response.ok) throw new Error('Respuesta de red incorrecta');
       
-      // Make envía los datos dentro de una estructura de "bundles". 
-      // Esta línea extrae la lista real de noticias venga como venga:
-      const noticias = data.value || (data[0] && data[0].value) || data;
+      const data = await response.json();
+      console.log("Datos del robot:", data);
 
-      const contenedor = document.getElementById('noticias-container'); // O como se llame tu contenedor
-      contenedor.innerHTML = ''; // Limpiamos el texto de "Inicializando..."
+      // Limpiamos el texto de carga
+      contenedor.innerHTML = '';
 
-      if (!noticias || noticias.length === 0) {
-        contenedor.innerHTML = '<p class="text-center">No hay noticias disponibles hoy.</p>';
+      // Si Make nos envía el paquete directo o dentro de un array
+      let noticias = Array.isArray(data) ? data : (data.value || []);
+      if (noticias.length === 0 && data[0] && data[0].value) {
+        noticias = data[0].value;
+      }
+
+      if (noticias.length === 0) {
+        contenedor.innerHTML = '<p style="text-center; color: #fff;">No hay noticias guardadas hoy.</p>';
         return;
       }
 
-      // Pintamos las noticias en la web
-      noticias.forEach(noticia => {
-        const item = noticia.data || noticia; // Por si vienen dentro de la propiedad "data"
-        const card = document.createElement('div');
-        card.className = 'noticia-card'; // Adapta la clase a tu CSS si es necesario
-        card.innerHTML = `
-          <h2>${item.titulo || item.title || 'Sin título'}</h2>
-          <p>${item.descripcion || item.description || ''}</p>
-          <a href="${item.enlace || item.url || '#'}" target="_blank">Leer más →</a>
+      // Maquetación ultra-limpia
+      noticias.forEach(item => {
+        const info = item.data || item;
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'noticia-card';
+        tarjeta.innerHTML = `
+          <h2 style="color: #00ffaa; margin-top: 20px;">${info.titulo || 'Noticia'}</h2>
+          <p style="color: #ffffff; margin-bottom: 10px;">${info.descripcion || ''}</p>
+          <a href="${info.enlace || '#'}" target="_blank" style="color: #00ffff; font-weight: bold;">Leer más →</a>
+          <hr style="opacity: 0.2; margin-top: 15px;">
         `;
-        contenedor.appendChild(card);
+        contenedor.appendChild(tarjeta);
       });
 
     } catch (error) {
-      console.error('Error al conectar con el robot:', error);
-      document.getElementById('noticias-container').innerHTML = 
-        '<p class="text-center text-danger">Error de conexión con la base de datos.</p>';
+      console.error('Error al conectar:', error);
+      contenedor.innerHTML = '<p style="color: #ff4444; text-align: center;">Error de conexión con el almacén de datos.</p>';
     }
   }
 
-  // Arrancamos la carga al entrar a la web
   document.addEventListener('DOMContentLoaded', cargarNoticias);
 </script>
