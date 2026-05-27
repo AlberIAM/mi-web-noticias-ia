@@ -1,196 +1,44 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universo IA - Actualidad y Conexión Tecnológica</title>
-    <style>
-        :root {
-            --bg-color: #0f111a;
-            --card-bg: #1a1d2e;
-            --text-main: #f0f2f5;
-            --text-muted: #a0aec0;
-            --accent: #00ffaa;
-            --accent-hover: #00cc88;
-        }
+<script>
+  // Cambia ESTE enlace por el tuyo de Make (el de la burbuja rosa custom webhook)
+  const URL_MAKE = 'https://hook.us1.make.com/tu_codigo_secreto_aqui';
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+  async function cargarNoticias() {
+    try {
+      const response = await fetch(URL_MAKE);
+      const data = await response.json();
+      
+      // Make envía los datos dentro de una estructura de "bundles". 
+      // Esta línea extrae la lista real de noticias venga como venga:
+      const noticias = data.value || (data[0] && data[0].value) || data;
 
-        header {
-            background: linear-gradient(135deg, #16192b, #0f111a);
-            padding: 2.5rem 1rem;
-            text-align: center;
-            border-bottom: 2px solid var(--accent);
-            box-shadow: 0 4px 20px rgba(0, 255, 170, 0.1);
-        }
+      const contenedor = document.getElementById('noticias-container'); // O como se llame tu contenedor
+      contenedor.innerHTML = ''; // Limpiamos el texto de "Inicializando..."
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            letter-spacing: 1px;
-        }
+      if (!noticias || noticias.length === 0) {
+        contenedor.innerHTML = '<p class="text-center">No hay noticias disponibles hoy.</p>';
+        return;
+      }
 
-        header h1 span {
-            color: var(--accent);
-        }
+      // Pintamos las noticias en la web
+      noticias.forEach(noticia => {
+        const item = noticia.data || noticia; // Por si vienen dentro de la propiedad "data"
+        const card = document.createElement('div');
+        card.className = 'noticia-card'; // Adapta la clase a tu CSS si es necesario
+        card.innerHTML = `
+          <h2>${item.titulo || item.title || 'Sin título'}</h2>
+          <p>${item.descripcion || item.description || ''}</p>
+          <a href="${item.enlace || item.url || '#'}" target="_blank">Leer más →</a>
+        `;
+        contenedor.appendChild(card);
+      });
 
-        header p {
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
-        }
+    } catch (error) {
+      console.error('Error al conectar con el robot:', error);
+      document.getElementById('noticias-container').innerHTML = 
+        '<p class="text-center text-danger">Error de conexión con la base de datos.</p>';
+    }
+  }
 
-        main {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
-        }
-
-        #news-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .news-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 255, 170, 0.15);
-            border-color: rgba(0, 255, 170, 0.3);
-        }
-
-        .news-content {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .news-date {
-            font-size: 0.85rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .news-title {
-            font-size: 1.3rem;
-            margin: 0 0 1rem 0;
-            line-height: 1.4;
-            color: var(--text-main);
-        }
-
-        .news-description {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .news-link {
-            align-self: flex-start;
-            background-color: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-
-        .news-link:hover {
-            background-color: var(--accent);
-            color: var(--bg-color);
-        }
-
-        .loading, .error-msg {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 1.2rem;
-            padding: 3rem;
-            color: var(--text-muted);
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 4rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>⚡ Universo <span>IA</span></h1>
-        <p>Noticias globales de tecnología e inteligencia artificial en tiempo real</p>
-    </header>
-
-    <main>
-        <div id="news-container">
-            <div class="loading">Sintonizando canales artificiales...</div>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Red de Actualidad Tecnológica. Contenido automatizado.</p>
-    </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const container = document.getElementById("news-container");
-            
-            fetch('noticias.json')
-                .then(response => {
-                    if (!response.ok) throw new Error();
-                    return response.json();
-                })
-                .then(noticias => {
-                    container.innerHTML = "";
-                    if(noticias.length === 0) {
-                        container.innerHTML = '<div class="loading">Esperando actualización del sistema de noticias...</div>';
-                        return;
-                    }
-                    
-                    noticias.reverse().forEach(item => {
-                        const card = document.createElement("div");
-                        card.className = "news-card";
-                        card.innerHTML = `
-                            <div class="news-content">
-                                <div class="news-date">${item.fecha}</div>
-                                <h2 class="news-title">${item.titulo}</h2>
-                                <p class="news-description">${item.descripcion}</p>
-                                <a href="${item.enlace}" target="_blank" class="news-link">Leer fuente original</a>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    });
-                })
-                .catch(() => {
-                    container.innerHTML = '<div class="loading">Inicializando base de datos... Conectando con el robot.</div>';
-                });
-        });
-    </script>
-</body>
-</html>
+  // Arrancamos la carga al entrar a la web
+  document.addEventListener('DOMContentLoaded', cargarNoticias);
+</script>
